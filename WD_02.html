@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stopwatch Web Application</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: fixed;
+            background-color: lightgoldenrodyellow;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: brown;
+
+        }
+
+        .stopwatch {
+            background-color: rgb(185, 235, 232);
+            padding: 30px;
+            border-radius: 20px;
+            border: 3px solid black;
+            box-shadow: 3px 3px 15px black;
+            text-align: center;
+
+        }
+
+        #display {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            margin: 5px;
+            padding: 10px 20px;
+            font-size: 1em;
+            border: 3px solid black;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .stop {
+            background-color: red;
+        }
+
+        .start {
+            background-color: lightgreen;
+        }
+
+        .reset {
+            background-color: aqua;
+        }
+
+        .lap {
+            background-color: lightcoral;
+        }
+
+        .start:hover {
+            background-color: darkgreen;
+        }
+
+        .stop:hover {
+            background-color: darkred;
+        }
+
+        .reset:hover {
+            background-color: darkcyan;
+        }
+
+        .lap:hover {
+            background-color: darkorange;
+        }
+
+        #laps {
+            margin-top: 20px;
+            text-align: center;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .lap {
+            font-size: 1em;
+            margin: 3px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Stopwatch Web Application</h1>
+    <div class="stopwatch">
+        <div id="display">00:00:00:000</div>
+        <button class="btn start" onclick="startStopwatch()"><strong>Start</strong></button>
+        <button class="btn stop" onclick="pauseStopwatch()"><strong>Stop</strong></button>
+        <button class="btn reset" onclick="resetStopwatch()"><strong>Reset</strong></button>
+        <button class="btn lap" onclick="recordLap()"><strong>Lap</strong></button>
+        <div id="laps"></div>
+    </div>
+
+    <script>
+        let startTime = 0;
+        let elapsedTime = 0;
+        let isRunning = false;
+        let timerInterval;
+        const display = document.getElementById('display');
+        const laps = document.getElementById('laps');
+
+        function timeToString(time) {
+            let date = new Date(time);
+            let hours = date.getUTCHours();
+            let minutes = date.getUTCMinutes();
+            let seconds = date.getUTCSeconds();
+            let milliseconds = date.getUTCMilliseconds();
+
+            return (
+                (hours < 10 ? "0" + hours : hours) + ":" +
+                (minutes < 10 ? "0" + minutes : minutes) + ":" +
+                (seconds < 10 ? "0" + seconds : seconds) + ":" +
+                (milliseconds < 100 ? (milliseconds < 10 ? "00" + milliseconds : "0" + milliseconds) : milliseconds)
+            );
+
+        }
+
+        function startStopwatch() {
+            if (isRunning) return;
+            isRunning = true;
+            startTime = Date.now() - elapsedTime
+            timerInterval = setInterval(() => {
+                elapsedTime = Date.now() - startTime;
+                display.textContent = timeToString(elapsedTime);
+            }, 10);
+        }
+        function pauseStopwatch() {
+            clearInterval(timerInterval);
+            isRunning = false;
+        }
+        function resetStopwatch() {
+            clearInterval(timerInterval);
+            isRunning = false;
+            display.textContent = "00:00:00:000";
+            elapsedTime = 0;
+            laps.innerHTML = "";
+
+        }
+        function recordLap() {
+            if (elapsedTime > 0) {
+                const lapTime = timeToString(elapsedTime);
+                const lapElement = document.createElement('div');
+                lapElement.textContent = "Lap:" + lapTime;
+                lapElement.classList.add("lap");
+                laps.appendChild(lapElement);
+            }
+        }
+    </script>
+
+
+</body>
+
+</html>
